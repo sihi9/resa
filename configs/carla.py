@@ -36,7 +36,7 @@ optimizer = dict(
     momentum=0.9,
 )
 
-epochs = 20
+epochs = 50
 batch_size = 8
 total_iter = (2000 // batch_size) * epochs  # adjust 2000 to actual training samples
 

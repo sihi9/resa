@@ -15,7 +15,7 @@ class CarlaLaneDataset(Dataset):
         self.transform = transform
 
         rgb_dir = os.path.join(self.root, 'rgb')
-        label_dir = os.path.join(self.root, 'labels/segmentation')
+        label_dir = os.path.join(self.root, 'labels')
 
         # Collect matching image-mask paths
         self.img_paths = sorted([

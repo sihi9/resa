@@ -2,7 +2,7 @@ import torch
 from tqdm import tqdm
 from torch.nn.functional import sigmoid
 from runner.registry import EVALUATOR
-from datasets.registry import build as build_dataset
+from datasets.registry import build_dataset
 
 @EVALUATOR.register_module
 class BinaryIoUEvaluator:
@@ -12,7 +12,7 @@ class BinaryIoUEvaluator:
         self.threshold = 0.5
         self.loss_fn = torch.nn.BCEWithLogitsLoss()
 
-        self.dataset = build_dataset(cfg.dataset.val)
+        self.dataset = build_dataset(cfg.dataset.val, cfg)
         self.dataloader = torch.utils.data.DataLoader(
             self.dataset,
             batch_size=cfg.batch_size,
@@ -40,7 +40,7 @@ class BinaryIoUEvaluator:
         with torch.no_grad():
             for batch in tqdm(self.dataloader, desc='[Carla Eval]'):
                 imgs = batch['img'].to(self.device)
-                masks = batch['label'].float().unsqueeze(1).to(self.device)
+                masks = batch['mask'].float().to(self.device)
 
                 logits = net(imgs)['seg']  # [B, 1, H, W]
 

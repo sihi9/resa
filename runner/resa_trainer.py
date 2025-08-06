@@ -17,7 +17,7 @@ class RESA(nn.Module):
         output = net(batch['img'])  # output['seg'] expected
 
         pred = output['seg']  # [B, 1, H, W]
-        gt = batch['label'].float().unsqueeze(1)  # [B, H, W] -> [B, 1, H, W]
+        gt = batch['mask'].float()#.unsqueeze(1)  # [B, H, W] -> [B, 1, H, W]
 
         seg_loss = self.criterion(pred, gt)
         loss = seg_loss * self.cfg.seg_loss_weight
