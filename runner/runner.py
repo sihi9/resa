@@ -88,7 +88,15 @@ class Runner(object):
 
     def validate(self, val_loader):
         self.net.eval()
-        for i, data in enumerate(tqdm(val_loader, desc=f'Validate')):
+
+        # === New path for BinaryIoUEvaluator ===
+        if callable(self.evaluator):
+            with torch.no_grad():
+                self.evaluator(self.net)
+            return
+
+        # === Fallback for legacy evaluators ===
+        for i, data in enumerate(tqdm(val_loader, desc='Validate')):
             data = self.to_cuda(data)
             with torch.no_grad():
                 output = self.net(data['img'])
@@ -101,7 +109,3 @@ class Runner(object):
             self.metric = metric
             self.save_ckpt(is_best=True)
         self.recorder.logger.info('Best metric: ' + str(self.metric))
-
-    def save_ckpt(self, is_best=False):
-        save_model(self.net, self.optimizer, self.scheduler,
-                self.recorder, is_best)
