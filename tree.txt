@@ -1,0 +1,63 @@
+.
+├── configs
+│   ├── culane.py
+│   └── tusimple.py
+├── datasets
+│   ├── base_dataset.py
+│   ├── culane.py
+│   ├── __init__.py
+│   ├── registry.py
+│   └── tusimple.py
+├── INSTALL.md
+├── intro.png
+├── LICENSE
+├── main.py
+├── models
+│   ├── decoder.py
+│   ├── __init__.py
+│   ├── registry.py
+│   ├── resa.py
+│   └── resnet.py
+├── README.md
+├── requirement.txt
+├── runner
+│   ├── evaluator
+│   │   ├── culane
+│   │   │   ├── culane.py
+│   │   │   ├── lane_evaluation
+│   │   │   │   ├── include
+│   │   │   │   │   ├── counter.hpp
+│   │   │   │   │   ├── hungarianGraph.hpp
+│   │   │   │   │   ├── lane_compare.hpp
+│   │   │   │   │   └── spline.hpp
+│   │   │   │   ├── Makefile
+│   │   │   │   └── src
+│   │   │   │       ├── counter.cpp
+│   │   │   │       ├── evaluate.cpp
+│   │   │   │       ├── lane_compare.cpp
+│   │   │   │       └── spline.cpp
+│   │   │   └── prob2lines.py
+│   │   ├── __init__.py
+│   │   └── tusimple
+│   │       ├── getLane.py
+│   │       ├── lane.py
+│   │       └── tusimple.py
+│   ├── __init__.py
+│   ├── logger.py
+│   ├── net_utils.py
+│   ├── optimizer.py
+│   ├── recorder.py
+│   ├── registry.py
+│   ├── resa_trainer.py
+│   ├── runner.py
+│   └── scheduler.py
+├── tools
+│   └── generate_seg_tusimple.py
+├── tree.txt
+└── utils
+    ├── config.py
+    ├── __init__.py
+    ├── registry.py
+    └── transforms.py
+
+12 directories, 48 files

@@ -74,32 +74,32 @@ class RESA(nn.Module):
 
 
 
-class ExistHead(nn.Module):
-    def __init__(self, cfg=None):
-        super(ExistHead, self).__init__()
-        self.cfg = cfg
+# class ExistHead(nn.Module):
+#     def __init__(self, cfg=None):
+#         super(ExistHead, self).__init__()
+#         self.cfg = cfg
 
-        self.dropout = nn.Dropout2d(0.1)  # ???
-        self.conv8 = nn.Conv2d(128, cfg.num_classes, 1)
+#         self.dropout = nn.Dropout2d(0.1)  # ???
+#         self.conv8 = nn.Conv2d(128, cfg.num_classes, 1)
 
-        stride = cfg.backbone.fea_stride * 2
-        self.fc9 = nn.Linear(
-            int(cfg.num_classes * cfg.img_width / stride * cfg.img_height / stride), 128)
-        self.fc10 = nn.Linear(128, cfg.num_classes-1)
+#         stride = cfg.backbone.fea_stride * 2
+#         self.fc9 = nn.Linear(
+#             int(cfg.num_classes * cfg.img_width / stride * cfg.img_height / stride), 128)
+#         self.fc10 = nn.Linear(128, cfg.num_classes-1)
 
-    def forward(self, x):
-        x = self.dropout(x)
-        x = self.conv8(x)
+#     def forward(self, x):
+#         x = self.dropout(x)
+#         x = self.conv8(x)
 
-        x = F.softmax(x, dim=1)
-        x = F.avg_pool2d(x, 2, stride=2, padding=0)
-        x = x.view(-1, x.numel() // x.shape[0])
-        x = self.fc9(x)
-        x = F.relu(x)
-        x = self.fc10(x)
-        x = torch.sigmoid(x)
+#         x = F.softmax(x, dim=1)
+#         x = F.avg_pool2d(x, 2, stride=2, padding=0)
+#         x = x.view(-1, x.numel() // x.shape[0])
+#         x = self.fc9(x)
+#         x = F.relu(x)
+#         x = self.fc10(x)
+#         x = torch.sigmoid(x)
 
-        return x
+#         return x
 
 
 @NET.register_module
@@ -110,14 +110,15 @@ class RESANet(nn.Module):
         self.backbone = ResNetWrapper(cfg)
         self.resa = RESA(cfg)
         self.decoder = eval(cfg.decoder)(cfg)
-        self.heads = ExistHead(cfg) 
+        #self.heads = ExistHead(cfg) 
 
     def forward(self, batch):
         fea = self.backbone(batch)
         fea = self.resa(fea)
         seg = self.decoder(fea)
-        exist = self.heads(fea)
+        #exist = self.heads(fea)
 
-        output = {'seg': seg, 'exist': exist}
+        output = {'seg': seg}
+
 
         return output

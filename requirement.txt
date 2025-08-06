@@ -1,8 +1,9 @@
 pandas
 addict
-sklearn
+scikit-learn
 opencv-python
 pytorch_warmup
 scikit-image
 tqdm
 termcolor
+yapf
