@@ -34,8 +34,8 @@ class CarlaLaneDataset(Dataset):
         self.mask_resize = T.Resize(img_size, interpolation=Image.NEAREST)
 
         self.normalize = T.Normalize(
-            mean=[0.485, 0.456, 0.406],
-            std=[0.229, 0.224, 0.225]
+            mean=self.cfg.img_norm['mean'],
+            std=self.cfg.img_norm['std']
         )
 
     def __len__(self):

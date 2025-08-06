@@ -55,9 +55,16 @@ eval_ep = 1
 save_ep = epochs
 log_interval = 50
 
+
+# Defaults for ImageNet normalization
+# img_norm = dict(
+#     mean=[0.485, 0.456, 0.406],  # ImageNet mean
+#     std=[0.229, 0.224, 0.225]
+# )
+# Town04_2000 normalization:
 img_norm = dict(
-    mean=[0.485, 0.456, 0.406],  # ImageNet mean
-    std=[0.229, 0.224, 0.225]
+    mean = [0.5768, 0.5630, 0.5705],
+    std = [0.1209, 0.1322, 0.1339]
 )
 
 img_height = 360
