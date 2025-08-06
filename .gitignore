@@ -1,8 +1,8 @@
 work_dirs/
 predicts/
 output/
-data/
-data
+# data/
+# data
 
 __pycache__/
 */*.un~
