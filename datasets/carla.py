@@ -9,25 +9,36 @@ from .registry import DATASETS
 @DATASETS.register_module
 class CarlaLaneDataset(Dataset):
     def __init__(self, root, folder_name='Town04_2000', img_size=(360, 640), transform=None, cfg=None):
-        self.cfg = cfg  # Safe to store even if unused
-        self.root = os.path.join(root, folder_name)
+        self.cfg = cfg
+        self.root = root
         self.img_size = img_size
         self.transform = transform
 
-        rgb_dir = os.path.join(self.root, 'rgb')
-        label_dir = os.path.join(self.root, 'labels')
+        # Accept either a string or a list of folder names
+        if isinstance(folder_name, str):
+            folder_names = [folder_name]
+        else:
+            folder_names = folder_name
 
-        # Collect matching image-mask paths
-        self.img_paths = sorted([
-            os.path.join(rgb_dir, fname)
-            for fname in os.listdir(rgb_dir)
-            if fname.endswith('.jpg')
-        ])
+        self.img_paths = []
+        self.mask_paths = []
+        for name in folder_names:
+            folder_root = os.path.join(self.root, name)
+            rgb_dir = os.path.join(folder_root, 'rgb_downscaled',)
+            label_dir = os.path.join(folder_root, 'labels_downscaled')
 
-        self.mask_paths = [
-            os.path.join(label_dir, os.path.splitext(os.path.basename(p))[0] + '.png')
-            for p in self.img_paths
-        ]
+            img_paths = sorted([
+                os.path.join(rgb_dir, fname)
+                for fname in os.listdir(rgb_dir)
+                if fname.endswith('.jpg')
+            ])
+            mask_paths = [
+                os.path.join(label_dir, os.path.splitext(os.path.basename(p))[0] + '.png')
+                for p in img_paths
+            ]
+
+            self.img_paths.extend(img_paths)
+            self.mask_paths.extend(mask_paths)
 
         self.to_tensor = T.ToTensor()
         self.resize = T.Resize(img_size, interpolation=Image.BILINEAR)
