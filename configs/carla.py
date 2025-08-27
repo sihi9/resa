@@ -76,13 +76,13 @@ dataset = dict(
     train=dict(
         type='CarlaLaneDataset',
         root=dataset_path,
-        folder_name=['Town04_2000', 'Town04_4000', 'Town05_10000', 'Town10HD_5000'],  # as many as you want
+        folder_name=['Town03_5000', 'Town04_5000', 'Town06_5000', 'Town10HD_5000'],  # as many as you want
         img_size=(img_height, img_width),
     ),
     val=dict(
         type='CarlaLaneDataset',
         root=dataset_path,
-        folder_name=['Town03_2000', 'Town06_5000'],  # or multiple if desired
+        folder_name=['Town05_5000'],  # or multiple if desired
         img_size=(img_height, img_width),
     )
 )

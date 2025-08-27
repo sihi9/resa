@@ -30,7 +30,11 @@ def build_dataloader(split_cfg, cfg, is_train=True):
     dataset = build_dataset(split_cfg, cfg)
 
     data_loader = torch.utils.data.DataLoader(
-        dataset, batch_size = cfg.batch_size, shuffle = shuffle,
-        num_workers = cfg.workers, pin_memory = False, drop_last = False)
+        dataset, 
+        batch_size = cfg.batch_size, 
+        shuffle = shuffle,
+        num_workers = cfg.workers, 
+        pin_memory = False, 
+        drop_last = False)
 
     return data_loader
