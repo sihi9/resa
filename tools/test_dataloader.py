@@ -7,14 +7,15 @@ import matplotlib.pyplot as plt
 import torchvision.transforms.functional as F
 
 from utils.config import Config
-from datasets import build_dataloader
+from datasets import build_train_val_dataloader, build_test_dataloader
 
 # --- Load Config & Dataloader ---
 cfg = Config.fromfile("configs/carla.py")
-loader = build_dataloader(cfg.dataset.train, cfg, is_train=True)
-print("✅ Dataloader loaded. Batches:", len(loader))
+train_loader, val_loader = build_train_val_dataloader(cfg.dataset.train, cfg)
+test_loader = build_test_dataloader(cfg.dataset.test, cfg)
+print("✅ Dataloader loaded. Batches:", len(test_loader))
 
-batch = next(iter(loader))
+batch = next(iter(val_loader))
 imgs = batch['img']          # [B, 3, H, W]
 masks = batch['mask']        # [B, 1, H, W]
 

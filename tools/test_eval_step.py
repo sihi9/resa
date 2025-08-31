@@ -5,7 +5,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import torch
 from utils.config import Config
 from models.registry import build_net
-from datasets import build_dataset
+from datasets import build_test_dataloader
 
 import torch.nn.functional as F
 
@@ -27,9 +27,7 @@ def test_eval_step():
     model = build_net(cfg)
     model.eval()
 
-    dataset = build_dataset(cfg.dataset.val, cfg)
-
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=cfg.batch_size)
+    dataloader = build_test_dataloader(cfg.dataset.test, cfg)
 
     batch = next(iter(dataloader))
     imgs = batch['img']

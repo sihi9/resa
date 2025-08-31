@@ -4,7 +4,7 @@ import torch
 from torchvision import transforms
 from tqdm import tqdm
 
-img_dir = 'data/Carla/Town04_2000/rgb'
+img_dir = 'data/Carla/Town06_5000/rgb_downscaled'
 transform = transforms.ToTensor()
 
 mean_sum = torch.zeros(3)

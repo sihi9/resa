@@ -37,8 +37,8 @@ optimizer = dict(
 )
 
 epochs = 50
-batch_size = 8
-total_iter = (2000 // batch_size) * epochs  # adjust 2000 to actual training samples
+batch_size = 16
+total_iter = 604 * epochs
 
 import math
 scheduler = dict(
@@ -61,11 +61,12 @@ log_interval = 50
 #     mean=[0.485, 0.456, 0.406],  # ImageNet mean
 #     std=[0.229, 0.224, 0.225]
 # )
-# Town04_2000 normalization:
+# Town06_5000 normalization:
 img_norm = dict(
-    mean = [0.5768, 0.5630, 0.5705],
-    std = [0.1209, 0.1322, 0.1339]
+    mean = [0.5315, 0.5698, 0.5877],
+    std = [0.1486, 0.1374, 0.1458]
 )
+
 
 img_height = 360
 img_width = 640
@@ -79,7 +80,7 @@ dataset = dict(
         folder_name=['Town03_5000', 'Town04_5000', 'Town06_5000', 'Town10HD_5000'],  # as many as you want
         img_size=(img_height, img_width),
     ),
-    val=dict(
+    test=dict(
         type='CarlaLaneDataset',
         root=dataset_path,
         folder_name=['Town05_5000'],  # or multiple if desired

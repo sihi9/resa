@@ -1,5 +1,4 @@
 import os
-import os.path as osp
 import time
 import shutil
 import torch
@@ -14,7 +13,7 @@ import models
 import argparse
 from utils.config import Config
 from runner.runner import Runner 
-from datasets import build_dataloader
+from datasets import build_test_dataloader, build_train_val_dataloader
 
 
 def main():
@@ -35,11 +34,17 @@ def main():
 
     runner = Runner(cfg)
 
-    if args.validate:
-        val_loader = build_dataloader(cfg.dataset.val, cfg, is_train=False)
-        runner.validate(val_loader)
-    else:
+    if not args.validate and False:
         runner.train()
+        
+    
+    print('Final Test:')
+    test_loader = build_test_dataloader(cfg.dataset.test, cfg)
+    print("Test batches:", len(test_loader))
+    runner.validate(test_loader)
+    
+    #runner.evaluate_best(dataloader=test_loader)
+    
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')

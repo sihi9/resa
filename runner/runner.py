@@ -3,12 +3,13 @@ import torch
 import numpy as np
 from tqdm import tqdm
 import pytorch_warmup as warmup
+import os
 
 from models.registry import build_net
 from .registry import build_trainer, build_evaluator
 from .optimizer import build_optimizer
 from .scheduler import build_scheduler
-from datasets import build_dataloader
+from datasets import build_train_val_dataloader
 from .recorder import build_recorder
 from .net_utils import save_model, load_network
 
@@ -35,6 +36,9 @@ class Runner(object):
         load_network(self.net, self.cfg.load_from,
                 finetune_from=self.cfg.finetune_from, logger=self.recorder.logger)
 
+    def load_ckpt(self, model_dir):
+        load_network(self.net, model_dir, logger=self.recorder.logger)
+        
     def to_cuda(self, batch):
         for k in batch:
             if k == 'meta':
@@ -73,8 +77,7 @@ class Runner(object):
     def train(self):
         self.recorder.logger.info('start training...')
         self.trainer = build_trainer(self.cfg)
-        train_loader = build_dataloader(self.cfg.dataset.train, self.cfg, is_train=True)
-        val_loader = build_dataloader(self.cfg.dataset.val, self.cfg, is_train=False)
+        train_loader, val_loader= build_train_val_dataloader(self.cfg.dataset.train, self.cfg)
 
         for epoch in range(self.cfg.epochs):
             self.recorder.epoch = epoch
@@ -88,11 +91,16 @@ class Runner(object):
 
     def validate(self, val_loader):
         self.net.eval()
-
-        # === New path for BinaryIoUEvaluator ===
+        self.evaluator.change_dataloader(val_loader)
+        # === New path for BinaryIoUEvaluator ===   
         if callable(self.evaluator):
             with torch.no_grad():
-                self.evaluator(self.net)
+                iou = self.evaluator(self.net)
+                print('Current IoU: ' + str(iou))
+                if iou > self.metric:
+                    print(f'New best IoU: {iou:.4f} (previous: {self.metric:.4f})')
+                    self.metric = iou
+                    self.save_ckpt(is_best=True)
             return
 
         # === Fallback for legacy evaluators ===
@@ -103,6 +111,7 @@ class Runner(object):
                 self.evaluator.evaluate(val_loader.dataset, output, data)
 
         metric = self.evaluator.summarize()
+        print('Current metric: ' + str(metric))
         if not metric:
             return
         if metric > self.metric:
@@ -111,5 +120,14 @@ class Runner(object):
         self.recorder.logger.info('Best metric: ' + str(self.metric))
 
     def save_ckpt(self, is_best=False):
-        save_model(self.net, self.optimizer, self.scheduler,
-                self.recorder, is_best)
+        save_model(self.net, 
+                   self.optimizer, 
+                   self.scheduler, 
+                   self.recorder, 
+                   is_best)
+    
+    def evaluate_best(self, dataloader=None)    :
+        model_dir = os.path.join(self.recorder.work_dir, 'ckpt', 'best.pth')
+        
+        self.load_ckpt(model_dir)
+        self.validate(dataloader)
